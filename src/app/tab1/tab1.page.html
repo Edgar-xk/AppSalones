@@ -1,17 +1,117 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      Reservación de salones
     </ion-title>
+    <ion-grid>
+      <ion-row>
+        <ion-datetime-button datetime="datetime"></ion-datetime-button>
+  
+        <ion-modal [keepContentsMounted]="true">
+          <ng-template>
+            <ion-datetime presentation="date" id="datetime" [showDefaultButtons]="true"></ion-datetime>
+  
+          </ng-template>
+        </ion-modal>
+      </ion-row>
+      <ion-row>
+        <ion-list>
+          <ion-item>
+            <ion-select placeholder="Seleccione Hora" id="selectHora" [(ngModel)]="HoraBusqueda" (ionChange)="IdentificarEstado()" interface="action-sheet">
+              <ion-select-option value=7>07:00 HRS.</ion-select-option>
+              <ion-select-option value=8>08:00 HRS.</ion-select-option>
+              <ion-select-option value=9>09:00 HRS.</ion-select-option>
+              <ion-select-option value=10>10:00 HRS.</ion-select-option>
+              <ion-select-option value=11>11:00 HRS.</ion-select-option>
+              <ion-select-option value=12>12:00 HRS.</ion-select-option>
+              <ion-select-option value=13>13:00 HRS.</ion-select-option>
+              <ion-select-option value=14>14:00 HRS.</ion-select-option>
+              <ion-select-option value=15>15:00 HRS.</ion-select-option>
+              <ion-select-option value=16>16:00 HRS.</ion-select-option>
+              <ion-select-option value=17>17:00 HRS.</ion-select-option>
+              <ion-select-option value=18>18:00 HRS.</ion-select-option>
+              <ion-select-option value=19>19:00 HRS.</ion-select-option>
+              <ion-select-option value=20>20:00 HRS.</ion-select-option>
+              <ion-select-option value=21>21:00 HRS.</ion-select-option>
+              <ion-select-option value=22>22:00 HRS.</ion-select-option>
+              <ion-select-option value=23>23:00 HRS.</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-row>
+    </ion-grid>
   </ion-toolbar>
+  
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-grid>
+    
+    <ion-row *ngFor="let salon of salones">
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+  
+            <ion-card-title>{{salon.info.Nombre}}</ion-card-title>
+            <ion-badge slot="end" color="danger">O</ion-badge>
+            <ion-card-subtitle>{{salon.info.Ubicacion}}</ion-card-subtitle>
+          </ion-card-header>
+  
+          <ion-card-content>
+            <ion-list>
+              <ion-item>
+                <ion-label>
+                  <h2>Estado</h2>
+                  <p>{{salon.Estado==1?"Ocupado":"Libre"}}</p>
+                </ion-label>
+  
+              </ion-item>
+              <ion-item *ngIf="salon.Estado==1">
+                <ion-label>
+                  <h2>Reservó</h2>
+                  <p>{{salon.info.Reservo}}</p>
+                </ion-label>
+  
+  
+              </ion-item>
+  
+  
+              <ion-item *ngIf="salon.Estado==1">
+                <ion-label>
+                  <h2>Grupo</h2>
+                  <p>{{salon.info.Grupo}}</p>
+                </ion-label>
+              </ion-item>
+              <ion-item *ngIf="salon.Estado==1">
+                <ion-label>
+                  <h2>Duración</h2>
+                  <p>{{salon.info.InicioR}}:00HRS - {{salon.info.FinR}}:00HRS</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+     
+      
+
+
+
+
+
+      
+    </ion-row>
+
+
+
+  </ion-grid>
+
+
+
+
+
+
+
 </ion-content>

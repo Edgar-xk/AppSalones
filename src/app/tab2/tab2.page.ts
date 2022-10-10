@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import {ReservarService} from '../services/reservar/reservar.service'
+import { ReservarService } from '../services/reservar/reservar.service'
 
 @Component({
   selector: 'app-tab2',
@@ -9,19 +9,24 @@ import {ReservarService} from '../services/reservar/reservar.service'
 })
 export class Tab2Page {
 
+  nombreReservante: string;
+  grupo: string;
+
+
   FechaSeleccionada: Date;
   HoraInicio;
   HoraFin;
   fecha: Date
   fechaFormateadaI: string;
   fechaFormateadaF: string;
-  constructor(private alertController: AlertController,reservarService:ReservarService) {
+  banderOcupado: boolean;
+  constructor(private alertController: AlertController, reservarService: ReservarService) {
     this.fecha = new Date();
-    console.log((this.fecha.getHours() + 1) + ':' + this.fecha.getMinutes());
+    // console.log((this.fecha.getHours() + 1) + ':' + this.fecha.getMinutes());
 
 
-    this.fechaFormateadaI = "2022-10-07T" + (this.fecha.getHours()<10?"0"+this.fecha.getHours():this.fecha.getHours()) + ":" + (this.fecha.getMinutes()<10?"0"+this.fecha.getMinutes():this.fecha.getMinutes()) + ":00-23:00";
-    this.fechaFormateadaF = "2022-10-07T" + (this.fecha.getHours()+1<10?"0"+this.fecha.getHours():this.fecha.getHours()) + ":" + (this.fecha.getMinutes()<10?"0"+this.fecha.getMinutes():this.fecha.getMinutes()) + ":00-23:00";
+    this.fechaFormateadaI = "2022-10-07T" + (this.fecha.getHours() < 10 ? "0" + this.fecha.getHours() : this.fecha.getHours()) + ":" + (this.fecha.getMinutes() < 10 ? "0" + this.fecha.getMinutes() : this.fecha.getMinutes()) + ":00-23:00";
+    this.fechaFormateadaF = "2022-10-07T" + (this.fecha.getHours() + 1 < 10 ? "0" + (this.fecha.getHours() + 1) : this.fecha.getHours() + 1) + ":" + (this.fecha.getMinutes() < 10 ? "0" + this.fecha.getMinutes() : this.fecha.getMinutes()) + ":00-23:00";
 
   }
   ngOnInit() {
@@ -31,24 +36,32 @@ export class Tab2Page {
 
 
   async InfoCodigo() {
-    await this.VerificarOcupacion();
-    const alert = await this.alertController.create({
-      header: 'Codigo: 51518',
-      message: "Guarde este codigo para realizar modificaciones",
-      buttons: [
 
-        {
-          text: 'OK',
-          role: 'confirm'
+    if (await this.VerificarOcupacion() && await this.VerificarInformacion()) {
+      let codigo:number=Math.floor(Math.random()*5000)+1;
 
-        },
-      ],
-    });
+      const alert = await this.alertController.create({
+        header: 'Codigo:'+codigo,
+        message: "Guarde este codigo para realizar modificaciones",
+        buttons: [
 
-    await alert.present();
+          {
+            text: 'OK',
+            role: 'confirm'
 
-    const { role } = await alert.onDidDismiss();
+          },
+        ],
+      });
 
+      await alert.present();
+
+      const { role } = await alert.onDidDismiss();
+
+      
+
+      //Llamar servicio de guardado de datos
+
+    }
   }
 
   async VerificarOcupacion() {
@@ -73,21 +86,113 @@ export class Tab2Page {
 
 
       //llamar servicio de consultar datos
-      
+
+      let reservaciones = ReservarService.getReservacionesSalonFecha(1, "2022-10-07");
+      //Verificación de ocupación para la entrada. 
+      let horas = Number.parseInt((<HTMLInputElement>document.getElementById("datetime")).value.substring(11, 13));
+      let minutos = Number.parseInt((<HTMLInputElement>document.getElementById("datetime")).value.substring(14, 16));
+      let horasF = Number.parseInt((<HTMLInputElement>document.getElementById("datetime1")).value.substring(11, 13));
+      let minutosF = Number.parseInt((<HTMLInputElement>document.getElementById("datetime1")).value.substring(14, 16));
+
+      let banderOcupadoFin = false;
+
+      this.banderOcupado = false;
+      for (let i = 0; i < reservaciones.length; i++) {
+
+        //hora==HoraReservacion y minutos>=HoraReservada  <------|HoraSeleccioanda----------HoraSeleccioanda|
+        if (horas == Number.parseInt(reservaciones[i].InicioR.substring(0, 2)) && minutos >= Number.parseInt(reservaciones[i].InicioR.substring(3, 5))) {
+          this.banderOcupado = true;
+        }
+        //hora>HoraReservacion y hora<=HoraReservada  |HoraSeleccioanda----------HoraSeleccioanda|------->
+        if (horas > Number.parseInt(reservaciones[i].InicioR.substring(0, 2)) && horas < Number.parseInt(reservaciones[i].FinR.substring(0, 2))) {
+          this.banderOcupado = true;
+        }
+        //hora==HoraReservacionFin y minutos<minutosDeHoraReservada  |HoraSeleccioanda----------HoraSeleccioanda|------->
+        if (horas == Number.parseInt(reservaciones[i].FinR.substring(0, 2)) && minutos < Number.parseInt(reservaciones[i].FinR.substring(3, 5))) {
+          this.banderOcupado = true;
+        }
+
+
+        //Verificación para la hora de salida.
+
+
+        if (!this.banderOcupado)
+          if (horas >= Number.parseInt(reservaciones[i].FinR.substring(0, 2))) {
+
+          } else {
+            //hora==HoraReservacion y minutos>=HoraReservada  <------|HoraSeleccioanda
+            if (horasF == Number.parseInt(reservaciones[i].InicioR.substring(0, 2)) && minutosF > Number.parseInt(reservaciones[i].InicioR.substring(3, 5))) {
+              banderOcupadoFin = true;
+            }
+
+            if (horasF > Number.parseInt(reservaciones[i].InicioR.substring(0, 2))) {
+              banderOcupadoFin = true;
+            }
+
+
+          }
+
+      }
 
 
 
 
 
 
-      
 
-      console.log((<HTMLInputElement>document.getElementById("fecha")).value);
-      console.log((<HTMLInputElement>document.getElementById("datetime")).value);
 
+
+
+
+
+
+
+
+
+
+      if (this.banderOcupado) {
+        document.getElementById("InicioOcupado").classList.remove("d-none");
+      } else {
+        !document.getElementById("InicioOcupado").classList.contains("d-none") ? document.getElementById("InicioOcupado").classList.add("d-none") : document.getElementById("InicioOcupado").classList;
+
+      }
+
+
+      if (banderOcupadoFin) {
+        document.getElementById("FinOcupado").classList.remove("d-none");
+      } else {
+        !document.getElementById("FinOcupado").classList.contains("d-none") ? document.getElementById("FinOcupado").classList.add("d-none") : document.getElementById("FinOcupado").classList;
+
+      }
+
+      return !banderOcupadoFin && !this.banderOcupado ? true : false;
     }
 
 
+
+  }
+
+  async VerificarInformacion() {
+    if (this.grupo == "" || this.grupo==undefined && this.nombreReservante == "" || this.nombreReservante==undefined) {
+
+      const alert = await this.alertController.create({
+        header: 'Datos incompletos',
+        message: "Verifique que todos los campos esten cubiertos",
+        buttons: [
+
+          {
+            text: 'OK',
+            role: 'confirm'
+
+          },
+        ],
+      });
+
+      await alert.present();
+
+      const { role } = await alert.onDidDismiss();
+      return false;
+    } else return true;
 
   }
 }

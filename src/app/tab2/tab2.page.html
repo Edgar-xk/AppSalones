@@ -1,17 +1,50 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Reservar
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-item>
+    <ion-label>Nombre de quién reserva</ion-label>
+    <ion-input [(ngModel)]="nombreReservante"></ion-input>
+  </ion-item>
+  <ion-item>
+    
+    <ion-datetime  presentation="date"  name="fecha" id="fecha"></ion-datetime>
+  </ion-item>
+  <ion-item >
+    <ion-badge slot="start" color="danger" class="d-none" id="InicioOcupado">Hora Ocupada</ion-badge>
+    <ion-label>Hora de Inicio</ion-label>
+    <ion-datetime-button datetime="datetime" ></ion-datetime-button>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="datetime" presentation="time"  name="HoraInicioR" value={{fechaFormateadaI}}    ></ion-datetime>
+      </ng-template>
+    </ion-modal>
+
+
+
+
+    
+  </ion-item>
+  <ion-item>
+    <ion-badge slot="start" color="danger" class="d-none" id="FinOcupado">Hora Ocupada</ion-badge>
+    <ion-label>Hora de Fin</ion-label>
+    <ion-datetime-button datetime="datetime1"  ></ion-datetime-button>
+
+    <ion-modal [keepContentsMounted]="true">
+      <ng-template>
+        <ion-datetime id="datetime1" presentation="time" value={{fechaFormateadaF}} name="HoraFinR" ></ion-datetime>
+      </ng-template>
+    </ion-modal>
+  </ion-item>
+  <ion-item>
+    <ion-label>Grupo</ion-label>
+    <ion-input [(ngModel)]="grupo"></ion-input>
+  </ion-item>
+  <ion-button expand="block" (click)="InfoCodigo()">Reservar</ion-button>
 </ion-content>
