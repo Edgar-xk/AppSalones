@@ -30,6 +30,12 @@
 </ion-header>
 
 <ion-content>
+  
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+  
+  
   <ion-datetime size="cover" presentation="date" multiple="true" id="dateTime4" [(ngModel)]="dias" monthValues={{mes}}
     yearValues={{anio}} enabled="false" *ngIf="dias!=undefined">
   </ion-datetime>

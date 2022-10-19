@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { ReservarService } from '../services/reservar/reservar.service'
-
+import { IonModal } from '@ionic/angular';
+import { OverlayEventDetail } from '@ionic/core/components';
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
-
+  @ViewChild(IonModal) modal3: IonModal;
 
   salones;
   nombreReservante: string;
@@ -23,7 +24,8 @@ export class Tab2Page {
   fechaFormateadaI: string;
   fechaFormateadaF: string;
   banderOcupado: boolean;
-  
+  contrasena: string;
+
   constructor(private alertController: AlertController, private reservarService: ReservarService) {
     this.GetSalones();
     this.fecha = new Date();
@@ -63,89 +65,97 @@ export class Tab2Page {
     }
   }
 
-
-
+ 
   async InfoCodigo() {
     // console.log("Guardar");
-
-
-
     this.VerificarOcupacion().then(async () => {
       //console.log(this.banderaValidacionOcupado);
       if (this.banderaValidacionOcupado && await this.VerificarInformacion()) {
-        let codigo: number = Math.floor(Math.random() * 5000) + 1;
-
-        const alert = await this.alertController.create({
-          header: 'Codigo:' + codigo,
-          message: "Guarde este codigo para realizar modificaciones",
-          buttons: [
-
-            {
-              text: 'OK',
-              role: 'confirm'
-
-            },
-          ],
-        });
-        await alert.present();
-
-        const { role } = await alert.onDidDismiss();
 
 
+        if (this.contrasena == "Aguascalientes") {
 
 
+          let codigo: number = Math.floor(Math.random() * 5000) + 1;
+    
+          const alert = await this.alertController.create({
+            header: 'Codigo:' + codigo,
+            message: "Guarde este codigo para realizar modificaciones",
+            buttons: [
+    
+              {
+                text: 'OK',
+                role: 'confirm'
+    
+              },
+            ],
+          });
+          await alert.present();
+    
+          const { role } = await alert.onDidDismiss();
+    
+    
+    
+    
+    
+          //Llamar servicio de guardado de datos
+    
+    
+          let fecha = (<HTMLInputElement>document.getElementById("fecha")).value.substring(0, 10);
+          let horaI = (<HTMLInputElement>document.getElementById("datetime2")).value.substring(11, 16);
+          let horaF = (<HTMLInputElement>document.getElementById("datetime1")).value.substring(11, 16)
+          //console.log(fecha);
+          let result = this.reservarService.Guardar(this.nombreReservante, fecha, horaI, horaF, this.grupo, this.salones[this.contador].id, codigo);
+    
+          (await result).subscribe(async data => {
+            if (data) {
+              const alert1 = await this.alertController.create({
+                header: 'Reservación exitosa',
+    
+                buttons: [
+    
+                  {
+                    text: 'OK',
+                    role: 'confirm'
+    
+                  },
+                ],
+              });
+              await alert1.present();
+    
+              const { role } = await alert1.onDidDismiss();
+              this.nombreReservante = "";
+              this.grupo = "";
+              this.contrasena="";
+              (<HTMLInputElement>document.getElementById("fecha")).value = "";
+            }
+          });
+    
+        }
+        else{
+          const alert = await this.alertController.create({
+            header: 'Contraseña Incorrecta',
+            message: "Solicite contraseña al administrador",
+            buttons: [
+    
+              {
+                text: 'OK',
+                role: 'confirm'
+    
+              },
+            ],
+          });
+    
+          await alert.present();
+    
+          const { role } = await alert.onDidDismiss();
+        }
 
-        //Llamar servicio de guardado de datos
-
-
-        let fecha = (<HTMLInputElement>document.getElementById("fecha")).value.substring(0, 10);
-        let horaI = (<HTMLInputElement>document.getElementById("datetime2")).value.substring(11, 16);
-        let horaF = (<HTMLInputElement>document.getElementById("datetime1")).value.substring(11, 16)
-        //console.log(fecha);
-        let result = this.reservarService.Guardar(this.nombreReservante, fecha, horaI, horaF, this.grupo, this.salones[this.contador].id, codigo);
-
-        (await result).subscribe(async data => {
-          if (data) {
-            const alert1 = await this.alertController.create({
-              header: 'Reservación exitosa',
-
-              buttons: [
-
-                {
-                  text: 'OK',
-                  role: 'confirm'
-
-                },
-              ],
-            });
-            await alert1.present();
-
-            const { role } = await alert1.onDidDismiss();
-            this.nombreReservante = "";
-            this.grupo = "";
-            (<HTMLInputElement>document.getElementById("fecha")).value = "";
-          }
-        });
 
 
       }
 
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   }
 
   async VerificarOcupacion() {
@@ -273,21 +283,21 @@ export class Tab2Page {
 
                 !banderOcupadoFin && !this.banderOcupado ? this.banderaValidacionOcupado = true : this.banderaValidacionOcupado = false;
                 resolve();
-              }else{
+              } else {
                 const alert1 = await this.alertController.create({
                   header: 'Error',
                   message: 'Hora de finalización menor o igual a la hora de Inicio.',
                   buttons: [
-    
+
                     {
                       text: 'OK',
                       role: 'confirm'
-    
+
                     },
                   ],
                 });
                 await alert1.present();
-    
+
                 const { role } = await alert1.onDidDismiss();
                 this.banderaValidacionOcupado = false
                 resolve();
@@ -350,4 +360,7 @@ export class Tab2Page {
     } else return true;
 
   }
+
+
+
 }

@@ -25,23 +25,33 @@ export class CalendarioPage implements OnInit {
   contador: number;
   constructor(private toastController: ToastController, private reservarService: ReservarService) {
     this.contador = 0;
+    this.mes = ((new Date()).getMonth()) + 1;
+    this.anio = ((new Date()).getFullYear());
+    this.fechaCalendarioMin = "2022-" + this.mes + "-01T00:00:00";
+    this.fechaCalendarioMax = "2022-" + this.mes + "-31T23:59:59";
+    this.salones=JSON.parse(localStorage.getItem("salones"));
+    this.dias = new Array<string>();
+    this.dias.push(this.fechaCalendarioMax);
+    this.ColocarFechas();
 
+   //thisconsole.log(this.dias);
+    /*
+    
+    this.GetSalones().then(()=>{
+      
+    });
 
-
-
-
-
+*/
+    
+      //this.ColocarFechas();
     // this.dia=3;
     // this.reservaciones = this.reservarService.getReservacionesSalonFecha(1, "");
 
 
   }
 
-  async ngOnInit() {
-    await this.GetSalones().then(()=>{
-      this.dias = new Array<string>();
-      this.ColocarFechas()
-    });
+   ngOnInit() {
+     //console.log(this.dias);
 
    
   }
@@ -50,8 +60,8 @@ export class CalendarioPage implements OnInit {
 
   async GetSalones() {
 
-    return new Promise<void>(async (resolve, reject) => {
-      let respons = await this.reservarService.GetSalones();
+    
+      let respons =  this.reservarService.GetSalones();
 
       respons.subscribe(data => {
         let salonesL = <Array<any>>data;
@@ -60,9 +70,9 @@ export class CalendarioPage implements OnInit {
           
 
         }
-        resolve();
+        
 
-      });
+     
 
     });
 
@@ -99,7 +109,7 @@ export class CalendarioPage implements OnInit {
     let mesR: number;
     let diaR: number;
     let diasN = new Array();
-    console.log(this.dias);
+    //console.log(this.dias);
     let response = this.reservarService.getReservacionesSalonMes(this.salones[this.contador].id, this.mes.toString());
 
     response.subscribe(data => {
@@ -202,6 +212,13 @@ export class CalendarioPage implements OnInit {
 
 
 
+  doRefresh(event){
+    setTimeout(() => {
+      this.GetSalones();
+      location.reload();
+      event.target.complete();
+    }, 1000);
+  }
 
 
   //Funciones Modal 

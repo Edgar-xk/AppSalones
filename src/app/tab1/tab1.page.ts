@@ -38,6 +38,9 @@ export class Tab1Page {
   async GetSalones(){
     this.reservarService.GetSalones().subscribe(data=>{
       this.salones=<Array<any>>data;
+      if(this.salones.length>0){
+        localStorage.setItem('salones', JSON.stringify(this.salones));
+      }
     });
   }
 
