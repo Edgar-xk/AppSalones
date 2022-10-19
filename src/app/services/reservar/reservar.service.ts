@@ -20,63 +20,6 @@ export class ReservarService {
 
 
 
-
-/*
-    let ejemploR = [{
-      id: "1",
-      Reservo: "Luis Marquez",
-      Grupo: "Valientes cn Cristo",
-      Fecha: "2022-10-10",
-      InicioR: "20:35",
-      FinR: "23:30"
-
-    },
-    {
-      id: "2",
-      Reservo: "Carlos Suarez",
-      Grupo: "MIRAC",
-      Fecha: "2022-10-10",
-      InicioR: "09:30",
-      FinR: "11:30"
-
-    },
-    {
-      id: "3",
-      Reservo: "Jorge Negrete",
-      Grupo: "P.Familiar",
-      Fecha: "2022-10-05",
-      InicioR: "13:30",
-      FinR: "14:30"
-    },{
-      id: "4",
-      Reservo: "Enrique Saldivar",
-      Grupo: "Acts",
-      Fecha: "2022-10-20",
-      InicioR: "20:35",
-      FinR: "23:30"
-
-    },
-    {
-      id: "5",
-      Reservo: "Ulises Lomelí",
-      Grupo: "Esmahí",
-      Fecha: "2022-10-30",
-      InicioR: "18:30",
-      FinR: "19:00"
-
-    },
-    {
-      id: "6",
-      Reservo: "Mayra ",
-      Grupo: "Kairós",
-      Fecha: "2022-10-22",
-      InicioR: "13:30",
-      FinR: "14:30"
-    }
-    
-    ]
-
-    return ejemploR;*/
   }
 
   public GetSalones(){
@@ -97,5 +40,18 @@ export class ReservarService {
     
     
     return  await  this.http.post<any>("http://localhost:80/AppiesAppSalones/NuevaReservacion.php",formData);
+  }
+
+  public getReservacionesSalonMes(idSalon:number,mes:string){
+
+    return this.http.get<any>("http://localhost:80/AppiesAppSalones/ReservacionesSalonMes.php?idSalon="+idSalon+"&mes="+mes);
+
+
+  }
+
+
+  public getReservacionesFechaHora(fecha:string,hora:string) {
+    return this.http.get("http://localhost:80/AppiesAppSalones/ReservacionesFechaHora.php?fecha="+fecha+"&hora="+hora);
+
   }
 }

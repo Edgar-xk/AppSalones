@@ -1,15 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { ModificacionesServiceService } from '../services/Modificaciones/modificaciones-service.service';
+import { IonModal } from '@ionic/angular';
+import { OverlayEventDetail } from '@ionic/core/components';
+
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page {
-
-  nombre: string;
+  @ViewChild(IonModal) modal: IonModal;
+  contrasena: string;
   ubicacion: string;
+  nombre:string;
   constructor(private modificaciones: ModificacionesServiceService, private alertController: AlertController) { }
 
   async AgregarSalon() {
@@ -83,4 +87,19 @@ export class Tab3Page {
     }
   }
 
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  confirm() {
+    this.modal.dismiss(this.contrasena, 'confirm');
+  }
+
+  onWillDismiss(event: Event) {
+    const ev = event as CustomEvent<OverlayEventDetail<string>>;
+    if (ev.detail.role === 'confirm') {
+      if(this.contrasena=="Sivitel")this.AgregarSalon();
+
+    } 
+  }
 }

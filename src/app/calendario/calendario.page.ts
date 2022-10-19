@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import {IonModal, ToastController} from '@ionic/angular'
+import { IonModal, ToastController } from '@ionic/angular'
 import { OverlayEventDetail } from '@ionic/core/components';
 
 import { ReservarService } from '../services/reservar/reservar.service'
@@ -9,112 +9,188 @@ import { ReservarService } from '../services/reservar/reservar.service'
   styleUrls: ['./calendario.page.scss'],
 })
 export class CalendarioPage implements OnInit {
-  @ViewChild(IonModal)modal: IonModal;
+  @ViewChild(IonModal) modal: IonModal;
 
-  mes:number;
-  anio:number;
+  mes: number;
+  anio: number;
   dias: string[];
-  diaString:string;
+  diaString: string;
   reservaciones;
   fechaCalendarioMin: string;
   fechaCalendarioMax: string;
-  dia:number;
+  dia: number;
   ReservacionesOrdenadas;
-  constructor(private toastController: ToastController, private reservarService:ReservarService) {
-    this.dias = new Array<string>();
+
+  salones: Array<any>;
+  contador: number;
+  constructor(private toastController: ToastController, private reservarService: ReservarService) {
+    this.contador = 0;
+
+
+
+
+
+
     // this.dia=3;
-    this.reservaciones = this.reservarService.getReservacionesSalonFecha(1, "");
-    this.ColocarFechas()
-  }
-
-  ngOnInit() {
+    // this.reservaciones = this.reservarService.getReservacionesSalonFecha(1, "");
 
 
   }
+
+  async ngOnInit() {
+    await this.GetSalones().then(()=>{
+      this.dias = new Array<string>();
+      this.ColocarFechas()
+    });
+
+   
+  }
+
+
+
+  async GetSalones() {
+
+    return new Promise<void>(async (resolve, reject) => {
+      let respons = await this.reservarService.GetSalones();
+
+      respons.subscribe(data => {
+        let salonesL = <Array<any>>data;
+        if (salonesL.length > 0) {
+          this.salones = salonesL;
+          
+
+        }
+        resolve();
+
+      });
+
+    });
+
+
+
+
+  }
+  CambiarSalonF() {
+    if ((this.contador + 1) == this.salones.length) {
+      this.contador = 0;
+    } else {
+      this.contador++;
+    }
+    this.ColocarFechas();
+  }
+  CambiarSalonR() {
+    if ((this.contador - 1) == -1) {
+      this.contador = this.salones.length - 1;
+    } else {
+      this.contador--;
+    }
+    this.ColocarFechas();
+  }
+
+
+
+
+
   ColocarFechas() {
     this.mes = ((new Date()).getMonth()) + 1;
-    this.anio= ((new Date()).getFullYear());
+    this.anio = ((new Date()).getFullYear());
     this.fechaCalendarioMin = "2022-" + this.mes + "-01T00:00:00";
     this.fechaCalendarioMax = "2022-" + this.mes + "-01T00:00:00";
     let mesR: number;
     let diaR: number;
-    for (let i = 0; i < this.reservaciones.length; i++) {
-      
-      mesR = Number.parseInt((this.reservaciones[i].Fecha).substring(5, 7));
-      if (mesR == this.mes) {
-      
-      //  diaR = Number.parseInt(().substring(8, 10));
-        this.dias.push(this.reservaciones[i].Fecha);
+    let diasN = new Array();
+    console.log(this.dias);
+    let response = this.reservarService.getReservacionesSalonMes(this.salones[this.contador].id, this.mes.toString());
+
+    response.subscribe(data => {
+      this.reservaciones = <Array<any>>data;
+      console.log(this.reservaciones);
+      if (this.reservaciones.length > 0) {
+        for (let i = 0; i < this.reservaciones.length; i++) {
+
+          mesR = Number.parseInt((this.reservaciones[i].fecha).substring(5, 7));
+          if (mesR == this.mes) {
+
+            //  diaR = Number.parseInt(().substring(8, 10));
+            diasN.push(this.reservaciones[i].fecha);
+          }
+        }
       }
-    }
+      this.dias = diasN;
+      //console.log(this.dias);
+    });
+
+
+
+
     //this.diaString="'"+this.dias+"'";
     //console.log(this.dias.toString());
-   //document.getElementById("dateTime").value=this.dias.toString();
+    //document.getElementById("dateTime").value=this.dias.toString();
   }
 
-  ConsultarDatTIme(){
-    
+  ConsultarDatTIme() {
+
   }
 
-  OrdenarReservaciones(){
-    this.ReservacionesOrdenadas= new Array();
-    let fecha:number;
-    let fecha1:number;
-    let bandera=false;
+  OrdenarReservaciones() {
+    this.ReservacionesOrdenadas = new Array();
+    let fecha: number;
+    let fecha1: number;
+    let bandera = false;
     //console.log(this.reservaciones.length);
-    for(let i=0; i<this.reservaciones.length;i++){
-      bandera=false;
-      if(i==0){
-      //  console.log("ReservacionesOrdenadas.lenght=="+this.ReservacionesOrdenadas.length);
+    for (let i = 0; i < this.reservaciones.length; i++) {
+      bandera = false;
+      if (i == 0) {
+        //  console.log("ReservacionesOrdenadas.lenght=="+this.ReservacionesOrdenadas.length);
         this.ReservacionesOrdenadas.push(this.reservaciones[i]);
       }
-      else{
-        
-        fecha1=Number.parseInt(this.reservaciones[i].Fecha.substring(8,10));
-       // console.log(this.ReservacionesOrdenadas.length);
-        
-        for(let q=0; q<this.ReservacionesOrdenadas.length;q++){
-          
-          fecha= Number.parseInt(this.ReservacionesOrdenadas[q].Fecha.substring(8,10));
-          
+      else {
 
-         
-         
-          if(fecha1<=fecha){
-            
-            this.ReservacionesOrdenadas.splice(q,0,this.reservaciones[i]);
-            bandera=true;
-            
+        fecha1 = Number.parseInt(this.reservaciones[i].fecha.substring(8, 10));
+        // console.log(this.ReservacionesOrdenadas.length);
+
+        for (let q = 0; q < this.ReservacionesOrdenadas.length; q++) {
+
+          fecha = Number.parseInt(this.ReservacionesOrdenadas[q].fecha.substring(8, 10));
+
+
+
+
+          if (fecha1 <= fecha) {
+
+            this.ReservacionesOrdenadas.splice(q, 0, this.reservaciones[i]);
+            bandera = true;
+
             break;
-           // if(q==6)break;
+            // if(q==6)break;
           }
-          
-          
 
-          
-          
-        
+
+
+
+
+
         }
-        if(!bandera){
+        if (!bandera) {
           this.ReservacionesOrdenadas.push(this.reservaciones[i]);
         }
-        
-        
-        
+
+
+
       }
-      
+
     }
-  //  console.log(this.ReservacionesOrdenadas);
+    //  console.log(this.ReservacionesOrdenadas);
 
   }
 
 
-  
 
 
 
 
-  async presentToast(message:string) {
+
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
       duration: 1500,
@@ -129,16 +205,16 @@ export class CalendarioPage implements OnInit {
 
 
   //Funciones Modal 
-  cancel(){
-    this.modal.dismiss(null,'cancel');
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
 
   }
-  confirm(){
+  confirm() {
     this.modal.dismiss('confirm');
   }
-  onWillDismiss(){
-    const ev=event as CustomEvent<OverlayEventDetail<string>>;
-    if(ev.detail.role==='confirm'){
+  onWillDismiss() {
+    const ev = event as CustomEvent<OverlayEventDetail<string>>;
+    if (ev.detail.role === 'confirm') {
 
     }
   }

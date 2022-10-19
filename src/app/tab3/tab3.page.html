@@ -23,9 +23,35 @@
         <ion-label>Ubicación</ion-label>
         <ion-input [(ngModel)]="ubicacion"></ion-input>
       </ion-item>
-      <ion-button expand="block" (click)="AgregarSalon()">Agregar</ion-button>
+      <ion-button expand="block"  id="open-modal-password" >Agregar</ion-button>
     </ion-card-content>
   </ion-card>
+  
+
+
+  <ion-modal trigger="open-modal-password" (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Contraseña de Administrador</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item>
+          <ion-label position="stacked">Contraseña de administrador:</ion-label>
+          <ion-input type="text" placeholder="contraseña" [(ngModel)]="contrasena"></ion-input>
+        </ion-item>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+
 
 
 

@@ -23,6 +23,7 @@ export class Tab2Page {
   fechaFormateadaI: string;
   fechaFormateadaF: string;
   banderOcupado: boolean;
+  
   constructor(private alertController: AlertController, private reservarService: ReservarService) {
     this.GetSalones();
     this.fecha = new Date();

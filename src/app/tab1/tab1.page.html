@@ -2,6 +2,7 @@
   <ion-toolbar>
     <ion-title>
       Reservación de salones
+      
     </ion-title>
     <ion-grid>
       <ion-row>
@@ -9,7 +10,7 @@
   
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime presentation="date" id="datetime" [showDefaultButtons]="true"></ion-datetime>
+            <ion-datetime presentation="date" id="datetime" [showDefaultButtons]="true" [(ngModel)]="FechaSeleccionada"></ion-datetime>
   
           </ng-template>
         </ion-modal>
@@ -45,17 +46,17 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-grid>
+  <ion-grid *ngIf="reservaciones.length>0">
     
-    <ion-row *ngFor="let salon of salones">
+    <ion-row *ngFor="let reservacion of reservaciones">
 
       <ion-col>
         <ion-card>
           <ion-card-header>
-            <ion-icon name="close-circle-outline" id="icon" title="Eliminar" *ngIf="salon.Estado==1"></ion-icon>
-            <ion-card-title>{{salon.info.Nombre}}</ion-card-title>
+            <ion-icon name="close-circle-outline" id="icon" title="Eliminar" *ngIf="reservacion.Estadoo==1"></ion-icon>
+            <ion-card-title>{{reservacion.salon.nombre}}</ion-card-title>
            
-            <ion-card-subtitle>{{salon.info.Ubicacion}}</ion-card-subtitle>
+            <ion-card-subtitle>{{reservacion.salon.ubicacion}}</ion-card-subtitle>
           </ion-card-header>
   
           <ion-card-content>
@@ -63,30 +64,30 @@
               <ion-item>
                 <ion-label>
                   <h2>Estado</h2>
-                  <p>{{salon.Estado==1?"Ocupado":"Libre"}}</p>
+                  <p>{{reservacion.Estado==1?"Ocupado":"Libre"}}</p>
                 </ion-label>
   
               </ion-item>
-              <ion-item *ngIf="salon.Estado==1">
+              <ion-item *ngIf="reservacion.Estado==1">
                 <ion-label>
                   <h2>Reservó</h2>
-                  <p>{{salon.info.Reservo}}</p>
+                  <p>{{reservacion.info.persona}}</p>
                 </ion-label>
   
   
               </ion-item>
   
   
-              <ion-item *ngIf="salon.Estado==1">
+              <ion-item *ngIf="reservacion.Estado==1">
                 <ion-label>
                   <h2>Grupo</h2>
-                  <p>{{salon.info.Grupo}}</p>
+                  <p>{{reservacion.info.grupo}}</p>
                 </ion-label>
               </ion-item>
-              <ion-item *ngIf="salon.Estado==1">
+              <ion-item *ngIf="reservacion.Estado==1">
                 <ion-label>
                   <h2>Duración</h2>
-                  <p>{{salon.info.InicioR}}:00HRS - {{salon.info.FinR}}:00HRS</p>
+                  <p>{{reservacion.info.horaI}}:00HRS - {{reservacion.info.horaF}}:00HRS</p>
                 </ion-label>
               </ion-item>
             </ion-list>

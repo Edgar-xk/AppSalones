@@ -4,15 +4,17 @@
     <ion-grid id="Header">
       <ion-row>
         <ion-col>
-          <ion-button fill="clear">
+          <ion-button fill="clear" (click)="CambiarSalonR()">
             <ion-icon name="chevron-back-outline"></ion-icon>
           </ion-button>
         </ion-col>
         <ion-col>
-          <ion-label>Salon 1</ion-label>
+          <ion-label *ngIf="salones!=undefined"><h2>{{salones[contador].nombre}}</h2>
+            <p>{{salones[contador].ubicacion}}</p></ion-label>
+          
         </ion-col>
         <ion-col>
-          <ion-button fill="clear">
+          <ion-button fill="clear" (click)="CambiarSalonF()">
             <ion-icon name="chevron-forward-outline"></ion-icon>
           </ion-button>
         </ion-col>
@@ -28,8 +30,8 @@
 </ion-header>
 
 <ion-content>
-  <ion-datetime size="cover" presentation="date" multiple="true" id="dateTime" [(ngModel)]="dias" monthValues={{mes}}
-    yearValues={{anio}} enabled="false">
+  <ion-datetime size="cover" presentation="date" multiple="true" id="dateTime4" [(ngModel)]="dias" monthValues={{mes}}
+    yearValues={{anio}} enabled="false" *ngIf="dias!=undefined">
   </ion-datetime>
   <ion-button expand="full" id="open-modal" (click)="OrdenarReservaciones()">Consultar</ion-button>
 
@@ -51,24 +53,25 @@
             <ion-col>
               
               <ion-list>
-                <ion-title>Salón Madre Auxiliadora</ion-title>
+                <ion-title> <ion-label *ngIf="salones!=undefined"><h2>{{salones[contador].nombre}}</h2>
+                  <p>{{salones[contador].ubicacion}}</p></ion-label></ion-title>
                 <ion-item *ngFor="let reservacion of ReservacionesOrdenadas">
                   <ion-label>
                     <h2>Fecha</h2>
-                    <p>{{reservacion.Fecha}}</p>
+                    <p>{{reservacion.fecha}}</p>
                   </ion-label>
                   <ion-label  id="ReservoAction">
                     <h2>Reservó</h2>
-                    <p (mouseenter)="presentToast(reservacion.Reservo)">{{reservacion.Reservo}}</p>
+                    <p (mouseenter)="presentToast(reservacion.persona)">{{reservacion.persona}}</p>
                     
                   </ion-label>
                   <ion-label>
                     <h2>Grupo</h2>
-                    <p>{{reservacion.Grupo}}</p>
+                    <p>{{reservacion.grupo}}</p>
                   </ion-label>
                   <ion-label>
                     <h2>Duración</h2>
-                    <p>{{reservacion.InicioR+"-"+reservacion.FinR}}</p>
+                    <p>{{reservacion.horaI+"-"+reservacion.horaF}}</p>
                   </ion-label>
                 </ion-item>
                 

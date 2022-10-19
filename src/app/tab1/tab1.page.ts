@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ReservarService } from '../services/reservar/reservar.service';
 
 @Component({
   selector: 'app-tab1',
@@ -6,71 +7,158 @@ import { Component } from '@angular/core';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-
+  FechaSeleccionada: string;
   salones;
-  HoraBusqueda:Number;
+  HoraBusqueda: Number;
   InfoSalones;
-  bandera:boolean;
-  constructor() {}
+  bandera: boolean;
+  reservaciones;
+  
+  InfoReservaciones
+  constructor(private reservarService: ReservarService) { }
   ngOnInit() {
+    let fechahoy = new Date();
+    this.reservaciones = new Array();
+    this.FechaSeleccionada = fechahoy.getFullYear() + "-" + (fechahoy.getMonth() + 1) + "-" + fechahoy.getDate();
 
-   // this.HoraBusqueda=23;
-    this.bandera=false;
-     this.InfoSalones=[
-     {
-          id:"1",
-          Nombre:"Salón Madre Auxiliadora",
-          Ubicacion:"Madre Auxiliadora",
-          Reservo:"Luis Marquez",
-          Grupo:"Valientes cn Cristo",
-          InicioR:20,
-          FinR:23
+    // this.HoraBusqueda=23;
+    this.bandera = false;
+
+
+
+    this.GetSalones();
+
+
+
+
+    // this.IdentificarEstado();
+  }
+
+
+  async GetSalones(){
+    this.reservarService.GetSalones().subscribe(data=>{
+      this.salones=<Array<any>>data;
+    });
+  }
+
+  IdentificarEstado() {
+
+    let fecha = (<HTMLInputElement>document.getElementById("datetime")).value.substring(0, 10);
+    let response = this.reservarService.getReservacionesFechaHora(this.FechaSeleccionada, this.HoraBusqueda.toString());
+    let salon;
+    response.subscribe(data => {
+      this.InfoReservaciones=<Array<any>>data;
+      this.InfoSalones=new Array();
+      this.reservaciones = new Array();
+      if(this.InfoReservaciones.length>0){
+
+        
+        for (let i = 0; i < this.InfoReservaciones.length; i++) {
+
+
+          salon=this.ObtenerInfoSalon(this.InfoReservaciones[i].idSalon);
+  
+          if (!this.bandera) {
+            this.reservaciones.push(
+              {
+                salon:salon,
+                info: this.InfoReservaciones[i],
+                Estado: 1
+              });
+          } else {
+            this.reservaciones.splice(i, 1,
+              {
+                salon:salon,
+                info: this.InfoReservaciones[i],
+                Estado: 1
+              });
+          }
+  
+  
+  
   
         }
-      
-      ,
-      {
-        id:"2",
-        Nombre:"Salón Juan Pablo Segundo",
-        Ubicacion:"San Ignacio",
-        Reservo:"",
-        Grupo:"",
-        InicioR:0,
-        FinR:0
-
-      }
-    ];
-   // this.IdentificarEstado();
-  }
-
-
-  IdentificarEstado(){
-    
-    console.log(this.HoraBusqueda);
-    console.log((<HTMLInputElement>document.getElementById("selectHora")).value);
-    this.salones=new Array();
-    for(let i=0;i<this.InfoSalones.length;i++){
-
-      if(!this.bandera){
-        this.salones.push(
-          {
-            info: this.InfoSalones[i],
-            Estado:this.InfoSalones[i].InicioR==this.HoraBusqueda||this.InfoSalones[i].FinR>this.HoraBusqueda&&this.InfoSalones[i].InicioR<=this.HoraBusqueda?1:2
-          });
-      }else{
-        this.salones.splice(i,1,
-          {
-            info: this.InfoSalones[i],
-            Estado:this.InfoSalones[i].InicioR==this.HoraBusqueda||this.InfoSalones[i].FinR>this.HoraBusqueda&&this.InfoSalones[i].InicioR<=this.HoraBusqueda?1:2
-          });
-      }
-
-      
         
-       
-    }
-    console.log(this.salones);
-    this.bandera=true;
+        
+
+        console.log(this.reservaciones);
+
+        this.bandera = true;
+        this.CompeltarInformacionSalones();
+      }else{
+        this.CompeltarInformacionSalones();
+      }
+
+
+
+    });
+
+
+
+
+
+
+
+
+
+
   }
 
+  ObtenerInfoSalon(idSalon: number){
+
+    
+    let bandera=false;
+    for(let i = 0; i < this.salones.length; i++){
+      if(this.salones[i].id==idSalon){
+        if(this.InfoSalones.length>0){
+          for(let j = 0; j < this.InfoSalones.length; j++){
+            if(this.InfoSalones[j]==idSalon){
+              bandera=true;
+//              j=this.InfoSalones.length;
+
+            }
+            
+
+          }
+          if(!bandera){
+            this.InfoSalones.push(idSalon);  
+          }
+        }else{
+          this.InfoSalones.push(idSalon);
+        }
+        
+        return {
+        'nombre':this.salones[i].nombre,
+        'ubicacion':this.salones[i].ubicacion
+
+
+      }}
+    }
+  }
+
+  CompeltarInformacionSalones(){
+
+    let bandera;
+    for(let i = 0; i < this.salones.length; i++){
+      bandera=false;
+      for(let j = 0; j < this.InfoSalones.length; j++){
+        if(this.InfoSalones[j]==this.salones[i].id){
+          bandera=true;
+        }
+      }
+      if(!bandera){
+        this.reservaciones.push(
+          {
+            salon:{
+              'nombre':this.salones[i].nombre,
+              'ubicacion':this.salones[i].ubicacion
+            },
+            Estado: 2
+          });
+      }
+
+
+
+    }
+  }
 }
