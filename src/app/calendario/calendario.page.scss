@@ -1,0 +1,28 @@
+ion-grid{
+    width: 100%;
+
+    #Header{
+        ion-row{
+            width: 100%;
+            ion-col{
+                width:33.33%;
+            }
+        }
+        ion-label{
+            height: 100%;
+        }
+    }
+   
+}
+.ion-padding{
+    #Info{
+        ion-row{
+            width: 100%;
+            ion-col{
+                width:100%;
+            }
+        }
+    }
+   
+    --ion-grid-width:100%;
+}

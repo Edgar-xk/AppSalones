@@ -52,9 +52,9 @@
       <ion-col>
         <ion-card>
           <ion-card-header>
-  
+            <ion-icon name="close-circle-outline" id="icon" title="Eliminar" *ngIf="salon.Estado==1"></ion-icon>
             <ion-card-title>{{salon.info.Nombre}}</ion-card-title>
-            <ion-badge slot="end" color="danger">O</ion-badge>
+           
             <ion-card-subtitle>{{salon.info.Ubicacion}}</ion-card-subtitle>
           </ion-card-header>
   

@@ -17,6 +17,10 @@ const routes: Routes = [
       },
       {
         path: 'tab3',
+        loadChildren: () => import('../calendario/calendario.module').then(m => m.CalendarioPageModule)
+      },
+      {
+        path: 'tab4',
         loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
       },
       {

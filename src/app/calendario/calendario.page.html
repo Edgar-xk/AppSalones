@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Días con reuniones.</ion-title>
+    <ion-grid id="Header">
+      <ion-row>
+        <ion-col>
+          <ion-button fill="clear">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-label>Salon 1</ion-label>
+        </ion-col>
+        <ion-col>
+          <ion-button fill="clear">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+
+  </ion-toolbar>
+
+
+
+
+</ion-header>
+
+<ion-content>
+  <ion-datetime size="cover" presentation="date" multiple="true" id="dateTime" [(ngModel)]="dias" monthValues={{mes}}
+    yearValues={{anio}} enabled="false">
+  </ion-datetime>
+  <ion-button expand="full" id="open-modal" (click)="OrdenarReservaciones()">Consultar</ion-button>
+
+  <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+         
+          <ion-title>Por fecha</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">Salir</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-grid id="Info">
+          
+          <ion-row >
+            <ion-col>
+              
+              <ion-list>
+                <ion-title>Salón Madre Auxiliadora</ion-title>
+                <ion-item *ngFor="let reservacion of ReservacionesOrdenadas">
+                  <ion-label>
+                    <h2>Fecha</h2>
+                    <p>{{reservacion.Fecha}}</p>
+                  </ion-label>
+                  <ion-label  id="ReservoAction">
+                    <h2>Reservó</h2>
+                    <p (mouseenter)="presentToast(reservacion.Reservo)">{{reservacion.Reservo}}</p>
+                    
+                  </ion-label>
+                  <ion-label>
+                    <h2>Grupo</h2>
+                    <p>{{reservacion.Grupo}}</p>
+                  </ion-label>
+                  <ion-label>
+                    <h2>Duración</h2>
+                    <p>{{reservacion.InicioR+"-"+reservacion.FinR}}</p>
+                  </ion-label>
+                </ion-item>
+                
+              </ion-list>
+
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+
+
+
+
+</ion-content>

@@ -1,17 +1,32 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 3
+      Modificaciones
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" id="content">
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Agregar Salón</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-item id="content">
+        <ion-label>Nombre del salón</ion-label>
+        <ion-input [(ngModel)]="nombre"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Ubicación</ion-label>
+        <ion-input [(ngModel)]="ubicacion"></ion-input>
+      </ion-item>
+      <ion-button expand="block" (click)="AgregarSalon()">Agregar</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+
+
 </ion-content>
