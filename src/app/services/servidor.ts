@@ -1,0 +1,1 @@
+export const servidor = "https://sivitel.mx/Apps";

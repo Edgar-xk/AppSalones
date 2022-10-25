@@ -114,7 +114,7 @@ export class CalendarioPage implements OnInit {
 
     response.subscribe(data => {
       this.reservaciones = <Array<any>>data;
-      console.log(this.reservaciones);
+      //console.log(this.reservaciones);
       if (this.reservaciones.length > 0) {
         for (let i = 0; i < this.reservaciones.length; i++) {
 

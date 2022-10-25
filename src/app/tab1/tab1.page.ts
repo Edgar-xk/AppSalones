@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AlertController, ToastController } from '@ionic/angular';
 import { ReservarService } from '../services/reservar/reservar.service';
 
 @Component({
@@ -14,8 +15,14 @@ export class Tab1Page {
   bandera: boolean;
   reservaciones;
   
-  InfoReservaciones
-  constructor(private reservarService: ReservarService) { }
+  InfoReservaciones;
+
+  CodigoReservacion:number;
+
+
+
+
+  constructor(private reservarService:ReservarService, private alertController: AlertController,private toastController: ToastController) { }
   ngOnInit() {
     let fechahoy = new Date();
     this.reservaciones = new Array();
@@ -84,7 +91,7 @@ export class Tab1Page {
         
         
 
-        console.log(this.reservaciones);
+       // console.log(this.reservaciones);
 
         this.bandera = true;
         this.CompeltarInformacionSalones();
@@ -164,4 +171,55 @@ export class Tab1Page {
 
     }
   }
+
+  async Eliminar(index: number) {
+    const alert = await this.alertController.create({
+      header: 'Código de reservación',
+      message: 'Ingrese el código que se le brindó al registrar la reservación',
+      inputs: [
+        {
+          name:"codigo",
+          placeholder: 'Codigo de modificaciones',
+          
+        },
+      
+      ],
+      buttons:[
+        {
+          text:'Eliminar',
+          handler:async (data)=>{
+           /* console.log("Eliminar");
+            console.log("Data: "+data.codigo);
+            console.log("Codigo: "+this.InfoReservaciones[index].codigo);*/
+            this.CodigoReservacion=data.codigo;
+            if(this.CodigoReservacion==this.reservaciones[index].info.codigo){
+
+              this.reservarService.EliminarReservacion(this.reservaciones[index].info.id).subscribe(data=>{
+                //console.log(data);
+                this.IdentificarEstado();
+              });
+            }else{
+              const toast = await this.toastController.create({
+                message: 'Código incorrecto',
+                duration: 1500,
+                position: 'bottom'
+              });
+          
+              await toast.present();
+            }
+          }
+        }
+
+      ]
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+
+    
+  
+  }
+
+
 }

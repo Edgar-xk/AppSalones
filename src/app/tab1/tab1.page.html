@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Reservación de salones
+      Reservación de salones 
       
     </ion-title>
     <ion-grid>
@@ -10,7 +10,7 @@
   
         <ion-modal [keepContentsMounted]="true">
           <ng-template>
-            <ion-datetime presentation="date" id="datetime" [showDefaultButtons]="true" [(ngModel)]="FechaSeleccionada"></ion-datetime>
+            <ion-datetime presentation="date" id="datetime" [showDefaultButtons]="true" [(ngModel)]="FechaSeleccionada" (ionChange)="IdentificarEstado()"></ion-datetime>
   
           </ng-template>
         </ion-modal>
@@ -48,12 +48,12 @@
 <ion-content [fullscreen]="true">
   <ion-grid *ngIf="reservaciones.length>0">
     
-    <ion-row *ngFor="let reservacion of reservaciones">
+    <ion-row *ngFor="let reservacion of reservaciones; let i = index">
 
       <ion-col>
         <ion-card>
           <ion-card-header>
-            <ion-icon name="close-circle-outline" id="icon" title="Eliminar" *ngIf="reservacion.Estadoo==1"></ion-icon>
+           <ion-icon  *ngIf="reservacion.Estado==1" name="close-circle-outline" id="icon" title="Eliminar" (click)="Eliminar(i)"></ion-icon>
             <ion-card-title>{{reservacion.salon.nombre}}</ion-card-title>
            
             <ion-card-subtitle>{{reservacion.salon.ubicacion}}</ion-card-subtitle>

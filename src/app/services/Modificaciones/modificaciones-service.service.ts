@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import {servidor} from '../servidor'
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +16,7 @@ export class ModificacionesServiceService {
 
     //let response = this.http.post<any>("http://localhost:4000/NuevoEspacio", { data: info });
     
-    return  await  this.http.post<any>("http://localhost:80/AppiesAppSalones/AgregarSalon.php",formData);
+    return  await  this.http.post<any>(servidor+"/AgregarSalon.php",formData);
     
   }
 }

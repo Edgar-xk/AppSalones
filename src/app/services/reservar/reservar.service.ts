@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
+import {servidor} from '../servidor';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +13,7 @@ export class ReservarService {
 
   public  async getReservacionesSalonFecha(idSalon: number, fecha: string) {
 
-    let respuesta= await this.http.get("http://localhost:80/AppiesAppSalones/GetReservacionesSalonFecha.php?idSalon="+idSalon+"&fecha="+fecha);
+    let respuesta= await this.http.get(servidor+"/GetReservacionesSalonFecha.php?idSalon="+idSalon+"&fecha="+fecha);
 
     return respuesta;
 
@@ -24,7 +24,7 @@ export class ReservarService {
 
   public GetSalones(){
     
-    return this.http.get<any>("http://localhost:80/AppiesAppSalones/ObtenerSalones.php");
+    return this.http.get<any>(servidor+"/ObtenerSalones.php");
   };
 
   public async Guardar(nombre:string,fecha:string,horaI:string,horaF:string,grupo:string,idSalon:number,codigo:number){
@@ -39,19 +39,25 @@ export class ReservarService {
 
     
     
-    return  await  this.http.post<any>("http://localhost:80/AppiesAppSalones/NuevaReservacion.php",formData);
+    return  await  this.http.post<any>(servidor+"/NuevaReservacion.php",formData);
   }
 
   public getReservacionesSalonMes(idSalon:number,mes:string){
 
-    return this.http.get<any>("http://localhost:80/AppiesAppSalones/ReservacionesSalonMes.php?idSalon="+idSalon+"&mes="+mes);
+    return this.http.get<any>(servidor+"/ReservacionesSalonMes.php?idSalon="+idSalon+"&mes="+mes);
 
 
   }
 
 
   public getReservacionesFechaHora(fecha:string,hora:string) {
-    return this.http.get("http://localhost:80/AppiesAppSalones/ReservacionesFechaHora.php?fecha="+fecha+"&hora="+hora);
+    return this.http.get(servidor+"/ReservacionesFechaHora.php?fecha="+fecha+"&hora="+hora);
 
+  }
+
+  public EliminarReservacion(id:number){
+    let formData=new FormData();
+    formData.append("id",id.toString());
+    return this.http.post<any>(servidor+"/EliminarReservacion.php",formData);
   }
 }
