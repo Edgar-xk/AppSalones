@@ -1,0 +1,1 @@
+Esta aplicación es un desarrollo para una comunidad parroquial, para administrar los salones que tienen en su comiunidad. 
