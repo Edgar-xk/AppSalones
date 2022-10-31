@@ -221,5 +221,14 @@ export class Tab1Page {
   
   }
 
+  
+  doRefresh(event){
+    setTimeout(() => {
+      
+      location.reload();
+      event.target.complete();
+    }, 1000);
+  }
+
 
 }

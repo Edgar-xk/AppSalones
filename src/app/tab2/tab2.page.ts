@@ -362,5 +362,14 @@ export class Tab2Page {
   }
 
 
+  
+  doRefresh(event){
+    setTimeout(() => {
+      this.GetSalones();
+      location.reload();
+      event.target.complete();
+    }, 1000);
+  }
+
 
 }
